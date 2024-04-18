@@ -110,13 +110,13 @@ class StatPlanetBackend:
     def __init__(self):
         settings = Settings.load()
 
-    def products(self, request: Request) -> list[Product]:
+    async def get_products(self, request: Request) -> list[Product]:
         """
         Return a list of supported products.
         """
         return PRODUCTS
 
-    def product(self, product_id: str, request: Request) -> Product | None:
+    async def get_product(self, product_id: str, request: Request) -> Product | None:
         """
         Return the product identified by `product_id` or `None` if it isn't
         supported.
