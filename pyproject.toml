@@ -2,7 +2,7 @@
 name = "stat-fastapi-planet"
 version = "0.0.0"
 description = "Spatio Temporal Asset Tasking with FastAPI"
-authors = ["Nicolas Neubauer"]
+authors = ["Nicolas Neubauer <nic@planet.com>"]
 license = "MIT"
 readme = "README.md"
 
