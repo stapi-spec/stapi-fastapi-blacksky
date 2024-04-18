@@ -2,7 +2,7 @@
 name = "stat-fastapi-blacksky"
 version = "0.0.0"
 description = "Spatio Temporal Asset Tasking with FastAPI"
-authors = [""]
+authors = ["Jessica Turner <JTurner@blacksky.com>"]
 license = "MIT"
 readme = "README.md"
 
