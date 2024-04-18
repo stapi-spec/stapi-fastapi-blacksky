@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "stat-fastapi-blacksky"
+name = "stat-fastapi-planet"
 version = "0.0.0"
 description = "Spatio Temporal Asset Tasking with FastAPI"
-authors = [""]
+authors = ["Nicolas Neubauer"]
 license = "MIT"
 readme = "README.md"
 
@@ -12,6 +12,7 @@ fastapi = "^0.110.0"
 pydantic = "^2.6.4"
 geojson-pydantic = "^1.0.2"
 stat-fastapi = { git = "https://github.com/stat-utils/stat-fastapi.git", branch = "main" }
+requests = "^2.31.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.1.1"
@@ -26,7 +27,7 @@ shapely = "^2.0.3"
 pre-commit = "^3.7.0"
 
 [tool.poetry.scripts]
-blacksky = "stat_fastapi_blacksky.__dev__:cli"
+blacksky = "stat_fastapi_planet.__dev__:cli"
 
 [tool.ruff]
 extend-ignore = ["E501", "UP007", "UP034"]

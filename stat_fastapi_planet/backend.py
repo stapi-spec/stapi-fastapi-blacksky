@@ -1,7 +1,7 @@
 import os
-from fastapi import Request
-import requests
 
+import requests
+from fastapi import Request
 from stat_fastapi.exceptions import NotFoundException
 from stat_fastapi.models.opportunity import (
     Opportunity,
@@ -10,28 +10,27 @@ from stat_fastapi.models.opportunity import (
 from stat_fastapi.models.order import Order
 from stat_fastapi.models.product import Product, Provider, ProviderRole
 
-from stat_fastapi_blacksky.settings import Settings
-from stat_fastapi_blacksky.models import Constraints
+from stat_fastapi_planet.models import Constraints
+from stat_fastapi_planet.settings import Settings
 
-
-BLACKSKY_BASE_URL = "https://api.sit.blacksky.com/v1"
+PLANET_BASE_URL = "https://oden.prod.planet-labs.com/v2"
 
 
 PRODUCTS = [
     Product(
-        id="BS-Test:Standard",
-        description="BS-Test standard product",
+        id="PL-123456:Assured Tasking",
+        description="SkySat Assured Tasking ",
         license="proprietary",
         providers=[
             Provider(
-                name="Blacksky",
+                name="Planet",
                 roles=[
                     ProviderRole.licensor,
                     ProviderRole.producer,
                     ProviderRole.processor,
                     ProviderRole.host,
                 ],
-                url="https://www.blacksky.com/",
+                url="https://www.planet.com/",
             )
         ],
         parameters=Constraints,
@@ -40,16 +39,16 @@ PRODUCTS = [
 ]
 
 
-def stat_to_oppurtunities_request(search: OpportunityRequest):
+def stat_to_opportunities_request(search: OpportunityRequest):
     """
-    :param search_request: STAC search as passed on to find_future_items
+    :param search: STAC search as passed on to find_future_items
     :return: a triple of iw request body, geom and bbox (geom and bbox needed again later to construct STAC answers)
     """
-    bbs_number, bs_product = search.product_id.split(":")
+    pl_number, pl_product = search.product_id.split(":")
 
     return {
         "item": {
-            "name": "Blacksky_Request",
+            "name": "Planet_Request",
             "description": "STAT Sprint 3",
             "timeframe": {
                 "lowerBoundType": "CLOSED",
@@ -65,7 +64,6 @@ def stat_to_oppurtunities_request(search: OpportunityRequest):
                     0,
                 ],
             },
-            "frequency": "ONCE",
             "offeringId": "391327b7-f4ee-4e7f-a894-3cffef19cae0",
             "frequency": "ONCE",
             "offeringParamValues": {"priority": "STANDARD", "sensor": "blacksky"},
@@ -73,7 +71,8 @@ def stat_to_oppurtunities_request(search: OpportunityRequest):
         },
     }
 
-def get_oppurtunities(blacksky_request: dict, token: str):
+
+def get_opportunities(planet_request: dict, token: str):
     headers = {
         "accept": "application/json",
         "Content-Type": "application/json",
@@ -81,12 +80,12 @@ def get_oppurtunities(blacksky_request: dict, token: str):
     }
 
     r = requests.post(
-        f"{BLACKSKY_BASE_URL}/feasibility/plan", headers=headers, json=blacksky_request
+        f"{PLANET_BASE_URL}/feasibility/plan", headers=headers, json=planet_request
     )
     return r.json()["opportunities"]
 
 
-def blacksky_oppurtunity_to_opportunity(iw: dict):
+def planet_opportunity_to_opportunity(iw: dict):
     """
     translates a Planet Imaging Windows into a STAT opportunity
     :param iw: an element from the 'imaging_windows' array of a /imaging_windows/[search_id] response
@@ -106,7 +105,7 @@ def blacksky_oppurtunity_to_opportunity(iw: dict):
     return opportunity
 
 
-class StatBlackskyBackend:
+class StatPlanetBackend:
 
     def __init__(self):
         settings = Settings.load()
@@ -137,9 +136,9 @@ class StatBlackskyBackend:
         if authorization := request.headers.get("authorization"):
             token = authorization.replace("Bearer ", "")
                 
-        blacksky_request = stat_to_oppurtunities_request(search)
-        oppurtunities = get_oppurtunities(blacksky_request, token)
-        return [blacksky_oppurtunity_to_opportunity(iw) for iw in oppurtunities]
+        planet_request = stat_to_opportunities_request(search)
+        opportunities = get_opportunities(planet_request, token)
+        return [planet_opportunity_to_opportunity(iw) for iw in opportunities]
 
     async def create_order(self, search: OpportunityRequest, request: Request) -> Order:
         """
