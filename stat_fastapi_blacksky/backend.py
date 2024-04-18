@@ -5,7 +5,7 @@ import requests
 from stat_fastapi.exceptions import NotFoundException
 from stat_fastapi.models.opportunity import (
     Opportunity,
-    OpportunitySearch,
+    OpportunityRequest,
 )
 from stat_fastapi.models.order import Order
 from stat_fastapi.models.product import Product, Provider, ProviderRole
@@ -34,13 +34,13 @@ PRODUCTS = [
                 url="https://www.blacksky.com/",
             )
         ],
-        constraints=Constraints,
+        parameters=Constraints,
         links=[],
     ),
 ]
 
 
-def stat_to_oppurtunities_request(search: OpportunitySearch):
+def stat_to_oppurtunities_request(search: OpportunityRequest):
     """
     :param search_request: STAC search as passed on to find_future_items
     :return: a triple of iw request body, geom and bbox (geom and bbox needed again later to construct STAC answers)
@@ -128,7 +128,7 @@ class StatBlackskyBackend:
             raise NotFoundException() from exc
 
     async def search_opportunities(
-        self, search: OpportunitySearch, request: Request
+        self, search: OpportunityRequest, request: Request
     ) -> list[Opportunity]:
         """
         Search for ordering opportunities for the given search parameters.
@@ -141,7 +141,7 @@ class StatBlackskyBackend:
         oppurtunities = get_oppurtunities(blacksky_request, token)
         return [blacksky_oppurtunity_to_opportunity(iw) for iw in oppurtunities]
 
-    async def create_order(self, search: OpportunitySearch, request: Request) -> Order:
+    async def create_order(self, search: OpportunityRequest, request: Request) -> Order:
         """
         Create a new order.
         """

@@ -5,7 +5,7 @@ from pydantic import (
 )
 
 from stat_fastapi.models.constraints import Constraints as BaseConstraints
-from stat_fastapi.models.opportunity import OpportunitySearch
+from stat_fastapi.models.opportunity import OpportunityRequest
 
 
 OFF_NADIR_RANGE = (0.0, 45.0)
@@ -42,5 +42,5 @@ class Constraints(BaseConstraints):
     cloud_cover: CloudCoverRange = CloudCoverRange(minimum=0, maximum=100)
 
 
-class ValidatedOpportunitySearch(OpportunitySearch):
+class ValidatedOpportunityRequest(OpportunityRequest):
     properties: Constraints
