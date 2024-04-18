@@ -133,7 +133,7 @@ class StatBlackskyBackend:
         """
         Search for ordering opportunities for the given search parameters.
         """
-        token = os.environ.get("BLACKSKY_TOKEN")
+        token = os.environ.get("BACKEND_TOKEN")
         if authorization := request.headers.get("authorization"):
             token = authorization.replace("Bearer ", "")
                 
