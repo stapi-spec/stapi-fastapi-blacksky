@@ -1,6 +1,6 @@
-# STAT FastAPI - Blacksky
+# STAPI FastAPI - Blacksky
 
-This is an example implementation for `https://github.com/stat-utils/stat-fastapi` proxying to the blacksky tasking API.
+This is an example implementation for `https://github.com/stapi-spec/stapi-fastapi` proxying to the Blacksky tasking API.
 
 
 Start the server locally
