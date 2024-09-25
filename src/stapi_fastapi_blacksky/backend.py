@@ -2,16 +2,16 @@ import os
 from fastapi import Request
 import requests
 
-from stat_fastapi.exceptions import NotFoundException
-from stat_fastapi.models.opportunity import (
+from stapi_fastapi.exceptions import NotFoundException
+from stapi_fastapi.models.opportunity import (
     Opportunity,
     OpportunityRequest,
 )
-from stat_fastapi.models.order import Order
-from stat_fastapi.models.product import Product, Provider, ProviderRole
+from stapi_fastapi.models.order import Order
+from stapi_fastapi.models.product import Product, Provider, ProviderRole
 
-from stat_fastapi_blacksky.settings import Settings
-from stat_fastapi_blacksky.models import Constraints
+from stapi_fastapi_blacksky.settings import Settings
+from stapi_fastapi_blacksky.models import Constraints
 
 
 BLACKSKY_BASE_URL = "https://api.sit.blacksky.com/v1"
@@ -40,7 +40,7 @@ PRODUCTS = [
 ]
 
 
-def stat_to_oppurtunities_request(search: OpportunityRequest):
+def stapi_to_oppurtunities_request(search: OpportunityRequest):
     """
     :param search_request: STAC search as passed on to find_future_items
     :return: a triple of iw request body, geom and bbox (geom and bbox needed again later to construct STAC answers)
@@ -50,7 +50,7 @@ def stat_to_oppurtunities_request(search: OpportunityRequest):
     return {
         "item": {
             "name": "Blacksky_Request",
-            "description": "STAT Sprint 3",
+            "description": "STAPI Sprint 3",
             "timeframe": {
                 "lowerBoundType": "CLOSED",
                 "lowerEndpoint": search.datetime[0].isoformat(),
@@ -88,9 +88,9 @@ def get_oppurtunities(blacksky_request: dict, token: str):
 
 def blacksky_oppurtunity_to_opportunity(iw: dict):
     """
-    translates a Planet Imaging Windows into a STAT opportunity
+    translates a Planet Imaging Windows into a STAPI opportunity
     :param iw: an element from the 'imaging_windows' array of a /imaging_windows/[search_id] response
-    :return: a corresponding STAT opportunity
+    :return: a corresponding STAPI opportunity
     """
 
     opportunity = Opportunity(
@@ -106,7 +106,7 @@ def blacksky_oppurtunity_to_opportunity(iw: dict):
     return opportunity
 
 
-class StatBlackskyBackend:
+class StapiBlackskyBackend:
 
     def __init__(self):
         settings = Settings.load()
@@ -137,7 +137,7 @@ class StatBlackskyBackend:
         if authorization := request.headers.get("authorization"):
             token = authorization.replace("Bearer ", "")
                 
-        blacksky_request = stat_to_oppurtunities_request(search)
+        blacksky_request = stapi_to_oppurtunities_request(search)
         oppurtunities = get_oppurtunities(blacksky_request, token)
         return [blacksky_oppurtunity_to_opportunity(iw) for iw in oppurtunities]
 
